@@ -1,5 +1,4 @@
-# Open-Altby-Pass
-hello 
+# Open-Altby-Pass 
 This script allows you to set your language level in the OFPPT-Langue platform to any desired level.
 Prerequisites
 
