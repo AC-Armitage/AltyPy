@@ -229,12 +229,12 @@ if __name__ == "__main__":
 	    "Sec-Fetch-Mode": "cors",
 	    "Sec-Fetch-Site": "same-origin",
 	    "TE": "trailers",
-	    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/111.0",
+	    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:111.0) Gecko/20100101 Firefox/111.0",
 	    "x-altissia-token": altoken,
 	    "x-device-uuid": cookie
 			}
 	payload_header = {
-			"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/111.0",
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:111.0) Gecko/20100101 Firefox/111.0",
 			"Accept": "application/json, text/plain, */*",
 			"Accept-Language": "en-US,en;q=0.5",
 			"Accept-Encoding": "gzip, deflate, br",
