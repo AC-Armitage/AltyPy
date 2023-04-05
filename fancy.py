@@ -191,8 +191,8 @@ class Altypasser:
 		    time.sleep(15)
 
 if __name__ == "__main__":
-	cookie = "765ac311-899e-41ca-8e4a-b671470c5cc7" #input("input deviceuuid here: ")
-	altoken = "82585019780a2a61f2e813bb5b87e7507d8be18012c6f7adde396900062ef824" #input("input x-altissia-token here: ")
+	cookie = input("input deviceuuid here: ")
+	altoken = input("input x-altissia-token here: ")
 	while True:
 	        try:
 	            #goal = every hole lmao
