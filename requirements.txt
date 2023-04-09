@@ -3,3 +3,5 @@ jsonlib
 pycopy-webbrowser
 time
 sys
+tkinter
+customtinter
