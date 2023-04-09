@@ -4,4 +4,4 @@ pycopy-webbrowser
 time
 sys
 tkinter
-customtinter
+customtkinter
