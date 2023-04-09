@@ -10,11 +10,14 @@ import tkinter as tk
 
 class Altypasser: 
     def __init__(self):
+
         self.gui = ctk.CTk()
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("dark-blue")
         self.gui.geometry("820x500")
         self.gui.title("AltyPy")
+        infoframe = ctk.CTkFrame(master=self.gui)
+        infoframe.pack(side="left", padx=5, fill="y")
         credframe = ctk.CTkFrame(master=self.gui)
         credframe.pack(pady=10, padx=15, fill="x")
 
@@ -42,10 +45,6 @@ class Altypasser:
                 tk.messagebox.showwarning("Missing values", "Please fill in all fields.")
                 return
             else:
-                logbar.insert("end", f"Deviceuuid: {self.cookie}\n")
-                logbar.insert("end", f"Altisia-token: {self.altoken}\n")
-                logbar.insert("end", f"Language: {self.language}\n")
-                logbar.insert("end", f"Objective: {self.obj}\n")
                 if self.obj == "Exercise":
                     print("exer")
                 elif self.obj == "Time":
@@ -93,11 +92,6 @@ class Altypasser:
 
         submitbutton = ctk.CTkButton(master=self.gui, text="Submit", command=submit).pack(pady=15)
         
-        logtitle = ctk.CTkLabel(master=self.gui, text="Logs: ").pack(side="left", pady=1, padx=1)
-        logframe = ctk.CTkFrame(master=self.gui)
-        #logframe.pack(fill="both", expand=True)
-        logbar = ctk.CTkTextbox(master=self.gui)
-        logbar.pack(fill="x", padx=10, pady=5, expand=True)
         self.gui.mainloop()
 
     def counter(self):
@@ -273,75 +267,90 @@ class Altypasser:
             timegui = ctk.CTkToplevel(self.gui)
             timegui.geometry("820x500")
             timegui.title("AltyPy/Timeadd")
-            licence = input("Enter your licenceid: ")
-            info_url = "https://app.ofppt-langues.ma/gw//followupapi/main/followup/information/study-language/"+self.language
-            live_url = "https://app.ofppt-langues.ma/gw//eventapi/main/api/event/internal/events"
-            live_payload = {
-                "action": "lc.application.alive",
-                "licenseId": licence,
-                "studyLg": self.language
+            opframe = ctk.CTkFrame(master=timegui)
+            opframe.pack(side="left", fill="y")
+            go_back_button = ctk.CTkButton(master=opframe, text="< Main page", command=lambda: [timegui.destroy(), self.gui.deiconify()])
+            go_back_button.pack(pady=15, padx=20)
+            optfr = ctk.CTkFrame(master=timegui)
+            #optfr.pack()
+            #licence = input("Enter your licenceid: ")
+            lise = ctk.StringVar()
+            tise = ctk.StringVar()
+            def start():
+                startbutt.configure(state="disabled")  
+                licencentry.configure(state="disabled")
+                licence = lise.get()
+                timelimit = tise.get()
+                info_url = "https://app.ofppt-langues.ma/gw//followupapi/main/followup/information/study-language/"+self.language
+                live_url = "https://app.ofppt-langues.ma/gw//eventapi/main/api/event/internal/events"
+                live_payload = {
+                    "action": "lc.application.alive",
+                    "licenseId": licence,
+                    "studyLg": self.language
+                    }
+                dead_payload = {
+                    "action": "lc.application.dead",
+                    "licenseId": licence,
+                    "studyLg": self.language
                 }
-            dead_payload = {
-                "action": "lc.application.dead",
-                "licenseId": licence,
-                "studyLg": self.language
-            }
 
-            timedemand = requests.get(info_url, headers=self.main_headers)
-            timeinfo = timedemand.json()
-            timespent = timeinfo["timespent"]["timespent"]
-            try:
-                timelimit = int(input("Aproximatly how much time do you want to add in seconds!!\nSkip if you dont want to set up a limit:"))
-            except ValueError:
-                timelimit = 999999999
-                pass
-            oldtime = timespent
-            hours = timespent // 3600
-            timespent  %= 3600
-            minutes = timespent // 60
-            print(f"You Have: {hours} hours, {minutes} minutes")
-            timesession = requests.Session()
-            timesession.headers.update(self.payload_header)
-            start_time = time.time()
-            
-            while True:
-                try:
-                    elapsed_time = time.time() - start_time
-                    live_payload['elapsed_time'] = elapsed_time
-                    keeper = timesession.post(live_url, json=live_payload)
-                    if keeper.status_code == 200:
-                        time.sleep(59)
-                        killer = timesession.post(live_url, json=dead_payload)
-                        if killer.status_code == 200:
-                            newtimedem = requests.get(info_url, headers=self.main_headers)
-                            if newtimedem.status_code == 200:
-                                newtime = newtimedem.json()
-                                newtimespent = newtime["timespent"]["timespent"]
-                                timeadded = newtimespent - oldtime 
-                                newhours = newtimespent // 3600
-                                print(f"[+] Total time added: {timeadded}s")
-                                if timeadded >= timelimit:
-                                    print("X+X+X+X+X+X+ I guess thats it +X+X+X+X+X+X\nAdios\nExiting program...")
-                                    sys.exit()
-                                else:   
-                                    newtimespent %= 3600
-                                    newmin = newtimespent // 60
-                                    print(f"You now have: {newhours} hours, {newmin} minutes")
+                timedemand = requests.get(info_url, headers=self.main_headers)
+                timeinfo = timedemand.json()
+                timespent = timeinfo["timespent"]["timespent"]
+                oldtime = timespent
+                hours = timespent // 3600
+                timespent  %= 3600
+                minutes = timespent // 60
+                print(f"You Have: {hours} hours, {minutes} minutes")
+                timesession = requests.Session()
+                timesession.headers.update(self.payload_header)
+                start_time = time.time()
+        
+                while True:
+                    try:
+                        elapsed_time = time.time() - start_time
+                        live_payload['elapsed_time'] = elapsed_time
+                        keeper = timesession.post(live_url, json=live_payload)
+                        if keeper.status_code == 200:
+                            time.sleep(59)
+                            killer = timesession.post(live_url, json=dead_payload)
+                            if killer.status_code == 200:
+                                newtimedem = requests.get(info_url, headers=self.main_headers)
+                                if newtimedem.status_code == 200:
+                                    newtime = newtimedem.json()
+                                    newtimespent = newtime["timespent"]["timespent"]
+                                    timeadded = newtimespent - oldtime 
+                                    newhours = newtimespent // 3600
+                                    print(f"[+] Total time added: {timeadded}s")
+                                    if timeadded >= timelimit:
+                                        print("X+X+X+X+X+X+ I guess thats it +X+X+X+X+X+X\nAdios\nExiting program...")
+                                        sys.exit()
+                                    else:   
+                                        newtimespent %= 3600
+                                        newmin = newtimespent // 60
+                                        print(f"You now have: {newhours} hours, {newmin} minutes")
+                                        pass
+                                else:
+                                    print("Error fetching time ignoring")
                                     pass
-                            else:
-                                print("Error fetching time ignoring")
                                 pass
+                            else:
+                                print("Dead Error")
                             pass
                         else:
-                            print("Dead Error")
-                        pass
-                    else:
-                        print("Error: maybe you entered some wrong information! ")
-                        pass
-                except requests.exceptions.ConnectionError:
-                    print("Slow or no connection")
-                    continue
-            timegui.focus_set()
+                            print("Error: maybe you entered some wrong information! ")
+                            pass
+                    except requests.exceptions.ConnectionError:
+                        print("Slow or no connection")
+                        continue
+            #optfr = ctk.CTkFrame(master=timegui).pack(side="left", fill="x", pady=10)
+            licencentry = ctk.CTkEntry(master=timegui, placeholder_text="Enter you licenceid")
+            timeadentry = ctk.CTkEntry(master=timegui, placeholder_text="How much time you want to add in seconds")
+            timeadentry.pack(padx=15, pady=10)
+            licencentry.pack(padx=15, pady=10)
+            startbutt = ctk.CTkButton(master=timegui, text="Start", command=start)
+            startbutt.pack(padx=15, pady=10)
+
             timegui.mainloop()
 if __name__ == "__main__":
     Altypasser = Altypasser()
